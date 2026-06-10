@@ -1,5 +1,20 @@
 
-State Machine - |pongGame|uart_rx:uart_inst|state
+State Machine - |pongGame|cmd_reset_parser:parser_inst|state
+Name state.S_UNK_WAIT state.S_UNK_SEND state.S_OK_WAIT state.S_OK_SEND state.S_COLLECT 
+state.S_COLLECT 0 0 0 0 0 
+state.S_OK_SEND 0 0 0 1 1 
+state.S_OK_WAIT 0 0 1 0 1 
+state.S_UNK_SEND 0 1 0 0 1 
+state.S_UNK_WAIT 1 0 0 0 1 
+
+State Machine - |pongGame|uart_tx:uart_tx_inst|state
+Name state.STOP state.DATA state.START state.IDLE 
+state.IDLE 0 0 0 0 
+state.START 0 0 1 1 
+state.DATA 0 1 0 1 
+state.STOP 1 0 0 1 
+
+State Machine - |pongGame|uart_rx:uart_rx_inst|state
 Name state.STOP state.DATA state.START state.IDLE 
 state.IDLE 0 0 0 0 
 state.START 0 0 1 1 

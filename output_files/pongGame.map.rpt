@@ -1,5 +1,5 @@
 Analysis & Synthesis report for pongGame
-Wed Jun 10 16:20:38 2026
+Wed Jun 10 17:19:35 2026
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -14,26 +14,29 @@ Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edit
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
   8. Analysis & Synthesis IP Cores Summary
-  9. State Machine - |pongGame|uart_rx:uart_inst|state
- 10. State Machine - |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state
- 11. State Machine - |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state
- 12. Registers Removed During Synthesis
- 13. Removed Registers Triggering Further Register Optimizations
- 14. General Register Statistics
- 15. Inverted Register Statistics
- 16. Multiplexer Restructuring Statistics (Restructuring Performed)
- 17. Parameter Settings for User Entity Instance: pll_25:pll_inst|pll_25_0002:pll_25_inst|altera_pll:altera_pll_i
- 18. Parameter Settings for User Entity Instance: adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst
- 19. Parameter Settings for User Entity Instance: adv7513_wrapper:i2c_init|adv7513_setup:setup_inst
- 20. Parameter Settings for User Entity Instance: uart_rx:uart_inst
- 21. Port Connectivity Checks: "pongImg:imagegen"
- 22. Port Connectivity Checks: "adv7513_wrapper:i2c_init|adv7513_setup:setup_inst"
- 23. Port Connectivity Checks: "adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst"
- 24. Port Connectivity Checks: "adv7513_wrapper:i2c_init|i2ciobuf:scl_buf"
- 25. Port Connectivity Checks: "pll_25:pll_inst"
- 26. Elapsed Time Per Partition
- 27. Analysis & Synthesis Messages
- 28. Analysis & Synthesis Suppressed Messages
+  9. State Machine - |pongGame|cmd_reset_parser:parser_inst|state
+ 10. State Machine - |pongGame|uart_tx:uart_tx_inst|state
+ 11. State Machine - |pongGame|uart_rx:uart_rx_inst|state
+ 12. State Machine - |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state
+ 13. State Machine - |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state
+ 14. Registers Removed During Synthesis
+ 15. Removed Registers Triggering Further Register Optimizations
+ 16. General Register Statistics
+ 17. Inverted Register Statistics
+ 18. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 19. Parameter Settings for User Entity Instance: pll_25:pll_inst|pll_25_0002:pll_25_inst|altera_pll:altera_pll_i
+ 20. Parameter Settings for User Entity Instance: adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst
+ 21. Parameter Settings for User Entity Instance: adv7513_wrapper:i2c_init|adv7513_setup:setup_inst
+ 22. Parameter Settings for User Entity Instance: uart_rx:uart_rx_inst
+ 23. Parameter Settings for User Entity Instance: uart_tx:uart_tx_inst
+ 24. Port Connectivity Checks: "pongImg:imagegen"
+ 25. Port Connectivity Checks: "adv7513_wrapper:i2c_init|adv7513_setup:setup_inst"
+ 26. Port Connectivity Checks: "adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst"
+ 27. Port Connectivity Checks: "adv7513_wrapper:i2c_init|i2ciobuf:scl_buf"
+ 28. Port Connectivity Checks: "pll_25:pll_inst"
+ 29. Elapsed Time Per Partition
+ 30. Analysis & Synthesis Messages
+ 31. Analysis & Synthesis Suppressed Messages
 
 
 
@@ -59,13 +62,13 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                          ;
 +-------------------------------------+-------------------------------------------------+
-; Analysis & Synthesis Status         ; Successful - Wed Jun 10 16:20:38 2026           ;
+; Analysis & Synthesis Status         ; Successful - Wed Jun 10 17:19:35 2026           ;
 ; Quartus II 64-Bit Version           ; 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition ;
 ; Revision Name                       ; pongGame                                        ;
 ; Top-level Entity Name               ; pongGame                                        ;
 ; Family                              ; Cyclone V                                       ;
 ; Logic utilization (in ALMs)         ; N/A                                             ;
-; Total registers                     ; 252                                             ;
+; Total registers                     ; 292                                             ;
 ; Total pins                          ; 49                                              ;
 ; Total virtual pins                  ; 0                                               ;
 ; Total block memory bits             ; 0                                               ;
@@ -184,6 +187,7 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------+---------+
 ; File Name with User-Entered Path ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                   ; Library ;
 +----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------+---------+
+; uart_tx.vhd                      ; yes             ; User VHDL File                     ; C:/Yura/projects/hdl/pong-fpga-master/uart_tx.vhd              ;         ;
 ; uart_rx.vhd                      ; yes             ; User VHDL File                     ; C:/Yura/projects/hdl/pong-fpga-master/uart_rx.vhd              ;         ;
 ; cmd_reset_parser.vhd             ; yes             ; User VHDL File                     ; C:/Yura/projects/hdl/pong-fpga-master/cmd_reset_parser.vhd     ;         ;
 ; pongGame.vhd                     ; yes             ; User VHDL File                     ; C:/Yura/projects/hdl/pong-fpga-master/pongGame.vhd             ;         ;
@@ -204,16 +208,16 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +---------------------------------------------+-------------------+
 ; Resource                                    ; Usage             ;
 +---------------------------------------------+-------------------+
-; Estimate of Logic utilization (ALMs needed) ; 405               ;
+; Estimate of Logic utilization (ALMs needed) ; 443               ;
 ;                                             ;                   ;
-; Combinational ALUT usage for logic          ; 627               ;
-;     -- 7 input functions                    ; 1                 ;
-;     -- 6 input functions                    ; 174               ;
-;     -- 5 input functions                    ; 78                ;
-;     -- 4 input functions                    ; 79                ;
-;     -- <=3 input functions                  ; 295               ;
+; Combinational ALUT usage for logic          ; 701               ;
+;     -- 7 input functions                    ; 5                 ;
+;     -- 6 input functions                    ; 172               ;
+;     -- 5 input functions                    ; 103               ;
+;     -- 4 input functions                    ; 98                ;
+;     -- <=3 input functions                  ; 323               ;
 ;                                             ;                   ;
-; Dedicated logic registers                   ; 252               ;
+; Dedicated logic registers                   ; 292               ;
 ;                                             ;                   ;
 ; I/O pins                                    ; 49                ;
 ; Total DSP Blocks                            ; 0                 ;
@@ -221,9 +225,9 @@ Parallel compilation was disabled, but you have multiple processors available. E
 ;     -- PLLs                                 ; 1                 ;
 ;                                             ;                   ;
 ; Maximum fan-out node                        ; FPGA_CLK_50~input ;
-; Maximum fan-out                             ; 182               ;
-; Total fan-out                               ; 3348              ;
-; Average fan-out                             ; 3.42              ;
+; Maximum fan-out                             ; 222               ;
+; Total fan-out                               ; 3814              ;
+; Average fan-out                             ; 3.49              ;
 +---------------------------------------------+-------------------+
 
 
@@ -232,22 +236,23 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +------------------------------------------------------------------------+-------------------+--------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------+--------------+
 ; Compilation Hierarchy Node                                             ; LC Combinationals ; LC Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                             ; Library Name ;
 +------------------------------------------------------------------------+-------------------+--------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------+--------------+
-; |pongGame                                                              ; 627 (1)           ; 252 (0)      ; 0                 ; 0          ; 49   ; 0            ; |pongGame                                                                                                       ; work         ;
-;    |adv7513_wrapper:i2c_init|                                          ; 178 (0)           ; 109 (0)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init                                                                              ; work         ;
-;       |I2C_CONTROLLER:i2c_inst|                                        ; 82 (82)           ; 52 (52)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst                                                      ; work         ;
+; |pongGame                                                              ; 701 (1)           ; 292 (0)      ; 0                 ; 0          ; 49   ; 0            ; |pongGame                                                                                                       ; work         ;
+;    |adv7513_wrapper:i2c_init|                                          ; 177 (0)           ; 109 (0)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init                                                                              ; work         ;
+;       |I2C_CONTROLLER:i2c_inst|                                        ; 81 (81)           ; 52 (52)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst                                                      ; work         ;
 ;       |adv7513_setup:setup_inst|                                       ; 96 (79)           ; 57 (57)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst                                                     ; work         ;
 ;          |setup_rom:setup_rom_inst|                                    ; 17 (17)           ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_rom:setup_rom_inst                            ; work         ;
 ;       |i2ciobuf:scl_buf|                                               ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|i2ciobuf:scl_buf                                                             ; work         ;
 ;          |i2ciobuf_iobuf_bidir_amo:i2ciobuf_iobuf_bidir_amo_component| ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|i2ciobuf:scl_buf|i2ciobuf_iobuf_bidir_amo:i2ciobuf_iobuf_bidir_amo_component ; work         ;
 ;       |i2ciobuf:sda_buf|                                               ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|i2ciobuf:sda_buf                                                             ; work         ;
 ;          |i2ciobuf_iobuf_bidir_amo:i2ciobuf_iobuf_bidir_amo_component| ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|adv7513_wrapper:i2c_init|i2ciobuf:sda_buf|i2ciobuf_iobuf_bidir_amo:i2ciobuf_iobuf_bidir_amo_component ; work         ;
-;    |cmd_reset_parser:parser_inst|                                      ; 26 (26)           ; 45 (45)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|cmd_reset_parser:parser_inst                                                                          ; work         ;
+;    |cmd_reset_parser:parser_inst|                                      ; 66 (66)           ; 60 (60)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|cmd_reset_parser:parser_inst                                                                          ; work         ;
 ;    |pll_25:pll_inst|                                                   ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pll_25:pll_inst                                                                                       ; pll_25       ;
 ;       |pll_25_0002:pll_25_inst|                                        ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pll_25:pll_inst|pll_25_0002:pll_25_inst                                                               ; pll_25       ;
 ;          |altera_pll:altera_pll_i|                                     ; 0 (0)             ; 0 (0)        ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pll_25:pll_inst|pll_25_0002:pll_25_inst|altera_pll:altera_pll_i                                       ; work         ;
-;    |pongImg:imagegen|                                                  ; 340 (340)         ; 51 (51)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pongImg:imagegen                                                                                      ; work         ;
-;    |pongSync:vgasync|                                                  ; 33 (33)           ; 20 (20)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pongSync:vgasync                                                                                      ; work         ;
-;    |uart_rx:uart_inst|                                                 ; 49 (49)           ; 27 (27)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|uart_rx:uart_inst                                                                                     ; work         ;
+;    |pongImg:imagegen|                                                  ; 337 (337)         ; 51 (51)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pongImg:imagegen                                                                                      ; work         ;
+;    |pongSync:vgasync|                                                  ; 32 (32)           ; 20 (20)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|pongSync:vgasync                                                                                      ; work         ;
+;    |uart_rx:uart_rx_inst|                                              ; 47 (47)           ; 27 (27)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|uart_rx:uart_rx_inst                                                                                  ; work         ;
+;    |uart_tx:uart_tx_inst|                                              ; 41 (41)           ; 25 (25)      ; 0                 ; 0          ; 0    ; 0            ; |pongGame|uart_tx:uart_tx_inst                                                                                  ; work         ;
 +------------------------------------------------------------------------+-------------------+--------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
@@ -265,8 +270,35 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 
 
 Encoding Type:  One-Hot
++--------------------------------------------------------------------------------------------------------------+
+; State Machine - |pongGame|cmd_reset_parser:parser_inst|state                                                 ;
++------------------+------------------+------------------+-----------------+-----------------+-----------------+
+; Name             ; state.S_UNK_WAIT ; state.S_UNK_SEND ; state.S_OK_WAIT ; state.S_OK_SEND ; state.S_COLLECT ;
++------------------+------------------+------------------+-----------------+-----------------+-----------------+
+; state.S_COLLECT  ; 0                ; 0                ; 0               ; 0               ; 0               ;
+; state.S_OK_SEND  ; 0                ; 0                ; 0               ; 1               ; 1               ;
+; state.S_OK_WAIT  ; 0                ; 0                ; 1               ; 0               ; 1               ;
+; state.S_UNK_SEND ; 0                ; 1                ; 0               ; 0               ; 1               ;
+; state.S_UNK_WAIT ; 1                ; 0                ; 0               ; 0               ; 1               ;
++------------------+------------------+------------------+-----------------+-----------------+-----------------+
+
+
+Encoding Type:  One-Hot
 +------------------------------------------------------------------+
-; State Machine - |pongGame|uart_rx:uart_inst|state                ;
+; State Machine - |pongGame|uart_tx:uart_tx_inst|state             ;
++-------------+------------+------------+-------------+------------+
+; Name        ; state.STOP ; state.DATA ; state.START ; state.IDLE ;
++-------------+------------+------------+-------------+------------+
+; state.IDLE  ; 0          ; 0          ; 0           ; 0          ;
+; state.START ; 0          ; 0          ; 1           ; 1          ;
+; state.DATA  ; 0          ; 1          ; 0           ; 1          ;
+; state.STOP  ; 1          ; 0          ; 0           ; 1          ;
++-------------+------------+------------+-------------+------------+
+
+
+Encoding Type:  One-Hot
++------------------------------------------------------------------+
+; State Machine - |pongGame|uart_rx:uart_rx_inst|state             ;
 +-------------+------------+------------+-------------+------------+
 ; Name        ; state.STOP ; state.DATA ; state.START ; state.IDLE ;
 +-------------+------------+------------+-------------+------------+
@@ -324,12 +356,16 @@ Encoding Type:  One-Hot
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|k_address[4..6]     ; Merged with adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|k_address[1]    ;
 ; pongImg:imagegen|ball_vel_y[0]                                       ; Stuck at VCC due to stuck port data_in                                       ;
 ; pongImg:imagegen|ball_vel_x[0]                                       ; Stuck at VCC due to stuck port data_in                                       ;
+; cmd_reset_parser:parser_inst|tx_data[7]                              ; Stuck at GND due to stuck port data_in                                       ;
+; uart_tx:uart_tx_inst|tx_buf[7]                                       ; Stuck at GND due to stuck port data_in                                       ;
+; cmd_reset_parser:parser_inst|state.S_UNK_SEND                        ; Lost fanout                                                                  ;
 ; adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state~6      ; Lost fanout                                                                  ;
 ; adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state~7      ; Lost fanout                                                                  ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state~10            ; Lost fanout                                                                  ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state~11            ; Lost fanout                                                                  ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state~12            ; Lost fanout                                                                  ;
-; Total Number of Removed Registers = 79                               ;                                                                              ;
+; cmd_reset_parser:parser_inst|state.S_OK_SEND                         ; Stuck at GND due to stuck port data_in                                       ;
+; Total Number of Removed Registers = 83                               ;                                                                              ;
 +----------------------------------------------------------------------+------------------------------------------------------------------------------+
 
 
@@ -346,6 +382,8 @@ Encoding Type:  One-Hot
 ;                                                                    ; due to stuck port data_in ;                                                               ;
 ; adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|i2c_address[6]   ; Stuck at GND              ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|k_address[7] ;
 ;                                                                    ; due to stuck port data_in ;                                                               ;
+; cmd_reset_parser:parser_inst|tx_data[7]                            ; Stuck at GND              ; uart_tx:uart_tx_inst|tx_buf[7]                                ;
+;                                                                    ; due to stuck port data_in ;                                                               ;
 +--------------------------------------------------------------------+---------------------------+---------------------------------------------------------------+
 
 
@@ -354,12 +392,12 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 252   ;
-; Number of registers using Synchronous Clear  ; 49    ;
+; Total registers                              ; 292   ;
+; Number of registers using Synchronous Clear  ; 90    ;
 ; Number of registers using Synchronous Load   ; 15    ;
-; Number of registers using Asynchronous Clear ; 128   ;
+; Number of registers using Asynchronous Clear ; 168   ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 184   ;
+; Number of registers using Clock Enable       ; 195   ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -369,6 +407,7 @@ Encoding Type:  One-Hot
 +-----------------------------------------------------------------+---------+
 ; Inverted Register                                               ; Fan out ;
 +-----------------------------------------------------------------+---------+
+; uart_tx:uart_tx_inst|tx_line_i                                  ; 2       ;
 ; pongImg:imagegen|lbar_top[6]                                    ; 6       ;
 ; pongImg:imagegen|lbar_top[7]                                    ; 6       ;
 ; pongImg:imagegen|lbar_top[3]                                    ; 7       ;
@@ -377,8 +416,8 @@ Encoding Type:  One-Hot
 ; pongImg:imagegen|ball_pos_left_next[4]                          ; 6       ;
 ; pongImg:imagegen|ball_pos_left_next[5]                          ; 6       ;
 ; pongImg:imagegen|ball_pos_left_next[8]                          ; 5       ;
-; pongImg:imagegen|ball_top_next[1]                               ; 6       ;
-; pongImg:imagegen|ball_top_next[0]                               ; 4       ;
+; pongImg:imagegen|ball_top_next[1]                               ; 7       ;
+; pongImg:imagegen|ball_top_next[0]                               ; 5       ;
 ; pongImg:imagegen|ball_top_next[4]                               ; 7       ;
 ; pongImg:imagegen|rbar_top[6]                                    ; 6       ;
 ; pongImg:imagegen|rbar_top[7]                                    ; 6       ;
@@ -387,11 +426,11 @@ Encoding Type:  One-Hot
 ; pongImg:imagegen|ball_vel_x[1]                                  ; 2       ;
 ; pongImg:imagegen|ball_vel_y[1]                                  ; 2       ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|busy           ; 7       ;
-; uart_rx:uart_inst|rx_reg                                        ; 10      ;
+; uart_rx:uart_rx_inst|rx_reg                                     ; 11      ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|byte_idx[2]    ; 6       ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|byte_idx[1]    ; 4       ;
 ; adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|byte_idx[0]    ; 5       ;
-; Total number of inverted registers = 22                         ;         ;
+; Total number of inverted registers = 23                         ;         ;
 +-----------------------------------------------------------------+---------+
 
 
@@ -400,31 +439,44 @@ Encoding Type:  One-Hot
 +--------------------+-----------+---------------+----------------------+------------------------+------------+-----------------------------------------------------------------------------+
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                                  ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+-----------------------------------------------------------------------------+
-; 3:1                ; 4 bits    ; 8 LEs         ; 0 LEs                ; 8 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|rbar_top[8]                                      ;
-; 3:1                ; 4 bits    ; 8 LEs         ; 0 LEs                ; 8 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|lbar_top[4]                                      ;
-; 4:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|clk_div_cnt[2]   ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|buf[5]                               ;
-; 4:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|cnt[0]                               ;
-; 6:1                ; 4 bits    ; 16 LEs        ; 4 LEs                ; 12 LEs                 ; Yes        ; |pongGame|uart_rx:uart_inst|bit_index[2]                                    ;
-; 6:1                ; 4 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|byte_step[1]     ;
-; 6:1                ; 8 bits    ; 32 LEs        ; 0 LEs                ; 32 LEs                 ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|rom_step[7]     ;
-; 6:1                ; 9 bits    ; 36 LEs        ; 18 LEs               ; 18 LEs                 ; Yes        ; |pongGame|uart_rx:uart_inst|bit_counter[3]                                  ;
+; 3:1                ; 4 bits    ; 8 LEs         ; 0 LEs                ; 8 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|rbar_top[5]                                      ;
+; 3:1                ; 4 bits    ; 8 LEs         ; 0 LEs                ; 8 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|lbar_top[5]                                      ;
+; 3:1                ; 3 bits    ; 6 LEs         ; 3 LEs                ; 3 LEs                  ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|cnt[0]                               ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|buf[7]                               ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|buf[14]                              ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|buf[20]                              ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|buf[25]                              ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|buf[34]                              ;
+; 4:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|clk_div_cnt[3]   ;
+; 6:1                ; 3 bits    ; 12 LEs        ; 3 LEs                ; 9 LEs                  ; Yes        ; |pongGame|uart_tx:uart_tx_inst|bit_index[2]                                 ;
+; 6:1                ; 4 bits    ; 16 LEs        ; 4 LEs                ; 12 LEs                 ; Yes        ; |pongGame|uart_rx:uart_rx_inst|bit_index[3]                                 ;
+; 6:1                ; 4 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|byte_step[3]     ;
+; 6:1                ; 8 bits    ; 32 LEs        ; 0 LEs                ; 32 LEs                 ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|rom_step[3]     ;
+; 6:1                ; 9 bits    ; 36 LEs        ; 18 LEs               ; 18 LEs                 ; Yes        ; |pongGame|uart_tx:uart_tx_inst|bit_counter[2]                               ;
+; 6:1                ; 9 bits    ; 36 LEs        ; 18 LEs               ; 18 LEs                 ; Yes        ; |pongGame|uart_rx:uart_rx_inst|bit_counter[3]                               ;
 ; 7:1                ; 3 bits    ; 12 LEs        ; 3 LEs                ; 9 LEs                  ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|k_data_repeat[1] ;
+; 10:1               ; 5 bits    ; 30 LEs        ; 5 LEs                ; 25 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|tx_idx[4]                            ;
+; 26:1               ; 2 bits    ; 34 LEs        ; 18 LEs               ; 16 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|tx_data[4]                           ;
+; 26:1               ; 2 bits    ; 34 LEs        ; 20 LEs               ; 14 LEs                 ; Yes        ; |pongGame|cmd_reset_parser:parser_inst|tx_data[2]                           ;
 ; 3:1                ; 3 bits    ; 6 LEs         ; 0 LEs                ; 6 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|rbar_top[6]                                      ;
-; 3:1                ; 3 bits    ; 6 LEs         ; 0 LEs                ; 6 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|lbar_top[6]                                      ;
+; 3:1                ; 3 bits    ; 6 LEs         ; 0 LEs                ; 6 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|lbar_top[3]                                      ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 2 LEs                ; 2 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|ball_vel_y[1]                                    ;
 ; 6:1                ; 3 bits    ; 12 LEs        ; 6 LEs                ; 6 LEs                  ; Yes        ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|byte_idx[2]      ;
-; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|ball_vel_x[1]                                    ;
-; 10:1               ; 20 bits   ; 120 LEs       ; 20 LEs               ; 100 LEs                ; Yes        ; |pongGame|pongImg:imagegen|ball_pos_left_next[7]                            ;
-; 3:1                ; 6 bits    ; 12 LEs        ; 12 LEs               ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|red_out[2]                                       ;
-; 4:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|blue_out[4]                                      ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |pongGame|pongImg:imagegen|ball_vel_x[0]                                    ;
+; 10:1               ; 20 bits   ; 120 LEs       ; 20 LEs               ; 100 LEs                ; Yes        ; |pongGame|pongImg:imagegen|ball_top_next[4]                                 ;
+; 3:1                ; 6 bits    ; 12 LEs        ; 12 LEs               ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|red_out[3]                                       ;
+; 4:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|blue_out[3]                                      ;
 ; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|red_out[6]                                       ;
-; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|green_out[5]                                     ;
+; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|green_out[4]                                     ;
 ; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |pongGame|pongImg:imagegen|blue_out[5]                                      ;
-; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |pongGame|uart_rx:uart_inst|Selector1                                       ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |pongGame|uart_tx:uart_tx_inst|Selector15                                   ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |pongGame|uart_rx:uart_rx_inst|Selector3                                    ;
 ; 8:1                ; 2 bits    ; 10 LEs        ; 6 LEs                ; 4 LEs                  ; No         ; |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state     ;
-; 9:1                ; 2 bits    ; 12 LEs        ; 4 LEs                ; 8 LEs                  ; No         ; |pongGame|uart_rx:uart_inst|Selector2                                       ;
+; 9:1                ; 2 bits    ; 12 LEs        ; 4 LEs                ; 8 LEs                  ; No         ; |pongGame|uart_tx:uart_tx_inst|Selector16                                   ;
+; 9:1                ; 2 bits    ; 12 LEs        ; 4 LEs                ; 8 LEs                  ; No         ; |pongGame|uart_rx:uart_rx_inst|Selector2                                    ;
 ; 9:1                ; 2 bits    ; 12 LEs        ; 8 LEs                ; 4 LEs                  ; No         ; |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state     ;
+; 10:1               ; 3 bits    ; 18 LEs        ; 6 LEs                ; 12 LEs                 ; No         ; |pongGame|cmd_reset_parser:parser_inst|Selector50                           ;
+; 10:1               ; 2 bits    ; 12 LEs        ; 4 LEs                ; 8 LEs                  ; No         ; |pongGame|cmd_reset_parser:parser_inst|Selector52                           ;
 ; 13:1               ; 4 bits    ; 32 LEs        ; 16 LEs               ; 16 LEs                 ; No         ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state            ;
 ; 13:1               ; 2 bits    ; 16 LEs        ; 6 LEs                ; 10 LEs                 ; No         ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state            ;
 ; 15:1               ; 2 bits    ; 20 LEs        ; 8 LEs                ; 12 LEs                 ; No         ; |pongGame|adv7513_wrapper:i2c_init|I2C_CONTROLLER:i2c_inst|state            ;
@@ -676,14 +728,25 @@ Note: In order to hide this table in the UI and the text report file, please set
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
-+----------------------------------------------------------------+
-; Parameter Settings for User Entity Instance: uart_rx:uart_inst ;
-+----------------+----------+------------------------------------+
-; Parameter Name ; Value    ; Type                               ;
-+----------------+----------+------------------------------------+
-; clk_freq       ; 50000000 ; Signed Integer                     ;
-; baud_rate      ; 115200   ; Signed Integer                     ;
-+----------------+----------+------------------------------------+
++-------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: uart_rx:uart_rx_inst ;
++----------------+----------+---------------------------------------+
+; Parameter Name ; Value    ; Type                                  ;
++----------------+----------+---------------------------------------+
+; clk_freq       ; 50000000 ; Signed Integer                        ;
+; baud_rate      ; 115200   ; Signed Integer                        ;
++----------------+----------+---------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: uart_tx:uart_tx_inst ;
++----------------+----------+---------------------------------------+
+; Parameter Name ; Value    ; Type                                  ;
++----------------+----------+---------------------------------------+
+; clk_freq       ; 50000000 ; Signed Integer                        ;
+; baud_rate      ; 115200   ; Signed Integer                        ;
++----------------+----------+---------------------------------------+
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
@@ -757,9 +820,12 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Analysis & Synthesis
     Info: Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-    Info: Processing started: Wed Jun 10 16:20:36 2026
+    Info: Processing started: Wed Jun 10 17:19:32 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off pongProj -c pongGame
 Warning (20028): Parallel compilation is not licensed and has been disabled
+Info (12021): Found 2 design units, including 1 entities, in source file uart_tx.vhd
+    Info (12022): Found design unit 1: uart_tx-rtl
+    Info (12023): Found entity 1: uart_tx
 Info (12021): Found 2 design units, including 1 entities, in source file uart_rx.vhd
     Info (12022): Found design unit 1: uart_rx-rtl
     Info (12023): Found entity 1: uart_rx
@@ -875,10 +941,10 @@ Info (10041): Inferred latch for "rbar_top[2]" at pongImg.vhd(138)
 Info (10041): Inferred latch for "lbar_top[0]" at pongImg.vhd(110)
 Info (10041): Inferred latch for "lbar_top[1]" at pongImg.vhd(110)
 Info (10041): Inferred latch for "lbar_top[2]" at pongImg.vhd(110)
-Info (12128): Elaborating entity "uart_rx" for hierarchy "uart_rx:uart_inst"
+Info (12128): Elaborating entity "uart_rx" for hierarchy "uart_rx:uart_rx_inst"
+Info (12128): Elaborating entity "uart_tx" for hierarchy "uart_tx:uart_tx_inst"
 Info (12128): Elaborating entity "cmd_reset_parser" for hierarchy "cmd_reset_parser:parser_inst"
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "UART_TX" is stuck at VCC
     Warning (13410): Pin "HDMI_TX_D[12]" is stuck at GND
     Warning (13410): Pin "LEDR[3]" is stuck at GND
     Warning (13410): Pin "LEDR[4]" is stuck at GND
@@ -901,7 +967,7 @@ Critical Warning (18061): Ignored Power-Up Level option on the following registe
     Critical Warning (18010): Register pongImg:imagegen|ball_top_next[3] will power up to Low
     Critical Warning (18010): Register pongImg:imagegen|ball_top_next[2] will power up to Low
 Info (286030): Timing-Driven Synthesis is running
-Info (17049): 49 registers lost all their fanouts during netlist optimizations.
+Info (17049): 50 registers lost all their fanouts during netlist optimizations.
 Info (144001): Generated suppressed messages file C:/Yura/projects/hdl/pong-fpga-master/output_files/pongGame.map.smsg
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 7 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
@@ -909,17 +975,17 @@ Warning: RST port on the PLL is not properly connected on instance pll_25:pll_in
     Info: Must be connected
 Warning (21074): Design contains 1 input pin(s) that do not drive logic
     Warning (15610): No output dependent on input pin "KEY[1]"
-Info (21057): Implemented 737 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 821 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 8 input pins
     Info (21059): Implemented 40 output pins
     Info (21060): Implemented 1 bidirectional pins
-    Info (21061): Implemented 687 logic cells
+    Info (21061): Implemented 771 logic cells
     Info (21065): Implemented 1 PLLs
-Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 35 warnings
-    Info: Peak virtual memory: 4699 megabytes
-    Info: Processing ended: Wed Jun 10 16:20:38 2026
-    Info: Elapsed time: 00:00:02
-    Info: Total CPU time (on all processors): 00:00:02
+Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 34 warnings
+    Info: Peak virtual memory: 4689 megabytes
+    Info: Processing ended: Wed Jun 10 17:19:35 2026
+    Info: Elapsed time: 00:00:03
+    Info: Total CPU time (on all processors): 00:00:03
 
 
 +------------------------------------------+

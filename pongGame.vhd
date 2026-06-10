@@ -13,7 +13,7 @@ port(
     lbutton_p1, rbutton_p1 : in std_logic;
     lbutton_p2, rbutton_p2 : in std_logic;
     
-    -- UART (подключается к пинам M9 и L9 на Cyclone V Starter Kit)
+    -- UART (пины M9 и L9 на Cyclone V Starter Kit)
     UART_RX        : in std_logic;
     UART_TX        : out std_logic;
     
@@ -59,8 +59,13 @@ architecture toplevel of pongGame is
     signal rx_valid     : std_logic;
     signal reset_cmd    : std_logic;
     signal img_reset_int: std_logic;
+
+    -- TX сигналы (парсер -> uart_tx)
+    signal tx_data      : std_logic_vector(7 downto 0);
+    signal tx_start     : std_logic;
+    signal tx_busy      : std_logic;
     
-    -- Компоненты (только те, что реально используются как чёрные ящики)
+    -- Компоненты (чёрные ящики — IP-ядра)
     component pll_25 is
         port (
             refclk   : in  std_logic;
@@ -118,7 +123,7 @@ begin
             frame_tick => refresh
         );
     
-    -- Генератор изображения (ваша игра)
+    -- Генератор изображения
     imagegen : entity work.pongImg
         port map(
             img_reset   => img_reset_int,
@@ -147,37 +152,54 @@ begin
     HDMI_TX_DE  <= video_on;
     
     -- -----------------------------------------------------------------
-    -- UART приёмник и парсер (прямая инстанциация)
+    -- UART приёмник
     -- -----------------------------------------------------------------
-    uart_inst: entity work.uart_rx
+    uart_rx_inst: entity work.uart_rx
         generic map(CLK_FREQ => 50_000_000, BAUD_RATE => 115_200)
         port map(
-            clk       => FPGA_CLK_50,
-            reset_n   => KEY(0),
-            rx_line   => UART_RX,
-            rx_data   => rx_data,
-            rx_valid  => rx_valid
+            clk      => FPGA_CLK_50,
+            reset_n  => KEY(0),
+            rx_line  => UART_RX,
+            rx_data  => rx_data,
+            rx_valid => rx_valid
         );
-    
+
+    -- -----------------------------------------------------------------
+    -- UART передатчик
+    -- -----------------------------------------------------------------
+    uart_tx_inst: entity work.uart_tx
+        generic map(CLK_FREQ => 50_000_000, BAUD_RATE => 115_200)
+        port map(
+            clk      => FPGA_CLK_50,
+            reset_n  => KEY(0),
+            tx_data  => tx_data,
+            tx_start => tx_start,
+            tx_busy  => tx_busy,
+            tx_line  => UART_TX
+        );
+
+    -- -----------------------------------------------------------------
+    -- Парсер команд (отвечает "ok\r\n" или "unknown command\r\n")
+    -- -----------------------------------------------------------------
     parser_inst: entity work.cmd_reset_parser
         port map(
             clk       => FPGA_CLK_50,
             reset_n   => KEY(0),
             rx_data   => rx_data,
             rx_valid  => rx_valid,
+            tx_data   => tx_data,
+            tx_start  => tx_start,
+            tx_busy   => tx_busy,
             reset_cmd => reset_cmd
         );
     
-    -- Объединение сброса: кнопка (KEY0) или команда RESET по UART
+    -- Сброс: кнопка KEY(0) или команда RESET по UART
     img_reset_int <= (not KEY(0)) or reset_cmd;
     
     -- Светодиоды
     LEDR(0) <= pll_locked;
     LEDR(1) <= init_done;
-    LEDR(2) <= reset_cmd;   -- кратковременная вспышка при получении RESET
+    LEDR(2) <= reset_cmd;
     LEDR(9 downto 3) <= (others => '0');
-    
-    -- UART_TX пока не используется, подтянем к '1' (высокий уровень)
-    UART_TX <= '1';
 
 end toplevel;
