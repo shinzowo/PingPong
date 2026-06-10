@@ -1,4 +1,11 @@
 
+State Machine - |pongGame|uart_rx:uart_inst|state
+Name state.STOP state.DATA state.START state.IDLE 
+state.IDLE 0 0 0 0 
+state.START 0 0 1 1 
+state.DATA 0 1 0 1 
+state.STOP 1 0 0 1 
+
 State Machine - |pongGame|adv7513_wrapper:i2c_init|adv7513_setup:setup_inst|setup_state
 Name setup_state.S_BUSYWAIT setup_state.S_SEND setup_state.S_WAIT setup_state.S_RESET setup_state.S_DONE 
 setup_state.S_RESET 0 0 0 0 0 
