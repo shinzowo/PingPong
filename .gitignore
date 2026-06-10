@@ -1,0 +1,40 @@
+# Quartus Directories to ignore
+db/
+incremental_db/
+output_files/
+simulation/
+timing/
+greybox_tmp/
+hc_output/
+.qsys_edit/
+*.cmp
+
+# Quartus temporary files and reports
+*.rpt
+*.smsg
+*.summary
+*.done
+*.jdi
+*.pin
+*.sld
+*.qws
+*.bak
+*.bsf
+*.f
+*.o
+*.err
+*.csv
+*.txt
+
+# Ignore binaries (SOF, POF) 
+*.sof
+*.pof
+*.jam
+*.jbc
+*.ekp
+*.jic
+
+*.wlf
+modelsim.ini
+transcript
+wlft*

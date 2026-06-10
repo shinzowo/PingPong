@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 21.1 850 win32 2026.06.10.23:54:33
+# ACDS 21.1 850 win32 2026.06.11.00:04:55
 
 # ----------------------------------------
 # ncsim - auto-generated simulation script
@@ -20,7 +20,7 @@
 # ----------------------------------------
 # This script provides commands to simulate the following IP detected in
 # your Quartus project:
-#     pll_25
+#     pll_3way
 # 
 # Altera recommends that you source this Quartus-generated IP simulation
 # script from your own customized top-level script, and avoid editing this
@@ -95,7 +95,7 @@
 # 
 # IP SIMULATION SCRIPT
 # ----------------------------------------
-# If pll_25 is one of several IP cores in your
+# If pll_3way is one of several IP cores in your
 # Quartus project, you can generate a simulation script
 # suitable for inclusion in your top-level simulation
 # script by running the following command line:
@@ -106,10 +106,10 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 21.1 850 win32 2026.06.10.23:54:33
+# ACDS 21.1 850 win32 2026.06.11.00:04:55
 # ----------------------------------------
 # initialize variables
-TOP_LEVEL_NAME="pll_25"
+TOP_LEVEL_NAME="pll_3way"
 QSYS_SIMDIR="./../"
 QUARTUS_INSTALL_DIR="D:/my_quartus/quartus/"
 SKIP_FILE_COPY=0
@@ -185,7 +185,7 @@ fi
 # ----------------------------------------
 # compile design files in correct order
 if [ $SKIP_COM -eq 0 ]; then
-  ncvhdl -v93 $USER_DEFINED_VHDL_COMPILE_OPTIONS $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/pll_25.vho"
+  ncvhdl -v93 $USER_DEFINED_VHDL_COMPILE_OPTIONS $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/pll_3way.vho"
 fi
 
 # ----------------------------------------

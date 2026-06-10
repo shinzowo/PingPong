@@ -31,29 +31,33 @@
  LIBRARY ieee;
  USE ieee.std_logic_1164.all;
 
- ENTITY  pll_25 IS 
+ ENTITY  pll_3way IS 
 	 PORT 
 	 ( 
 		 locked	:	OUT  STD_LOGIC;
 		 outclk_0	:	OUT  STD_LOGIC;
+		 outclk_1	:	OUT  STD_LOGIC;
+		 outclk_2	:	OUT  STD_LOGIC;
 		 refclk	:	IN  STD_LOGIC;
 		 rst	:	IN  STD_LOGIC
 	 ); 
- END pll_25;
+ END pll_3way;
 
- ARCHITECTURE RTL OF pll_25 IS
+ ARCHITECTURE RTL OF pll_3way IS
 
 	 ATTRIBUTE synthesis_clearbox : natural;
 	 ATTRIBUTE synthesis_clearbox OF RTL : ARCHITECTURE IS 1;
 	 SIGNAL  wire_gnd	:	STD_LOGIC;
-	 SIGNAL  wire_pll_25_altera_pll_altera_pll_i_639_locked	:	STD_LOGIC;
-	 SIGNAL  wire_pll_25_altera_pll_altera_pll_i_639_outclk	:	STD_LOGIC_VECTOR (0 DOWNTO 0);
+	 SIGNAL  wire_pll_3way_altera_pll_altera_pll_i_1557_locked	:	STD_LOGIC;
+	 SIGNAL  wire_pll_3way_altera_pll_altera_pll_i_1557_outclk	:	STD_LOGIC_VECTOR (2 DOWNTO 0);
  BEGIN
 
 	wire_gnd <= '0';
-	locked <= wire_pll_25_altera_pll_altera_pll_i_639_locked;
-	outclk_0 <= wire_pll_25_altera_pll_altera_pll_i_639_outclk(0);
-	pll_25_altera_pll_altera_pll_i_639 :  altera_pll
+	locked <= wire_pll_3way_altera_pll_altera_pll_i_1557_locked;
+	outclk_0 <= wire_pll_3way_altera_pll_altera_pll_i_1557_outclk(0);
+	outclk_1 <= wire_pll_3way_altera_pll_altera_pll_i_1557_outclk(1);
+	outclk_2 <= wire_pll_3way_altera_pll_altera_pll_i_1557_outclk(2);
+	pll_3way_altera_pll_altera_pll_i_1557 :  altera_pll
 	  GENERIC MAP (
 		c_cnt_bypass_en0 => "false",
 		c_cnt_bypass_en1 => "false",
@@ -219,7 +223,7 @@
 		duty_cycle7 => 50,
 		duty_cycle8 => 50,
 		duty_cycle9 => 50,
-		fractional_vco_multiplier => "false",
+		fractional_vco_multiplier => "true",
 		m_cnt_bypass_en => "false",
 		m_cnt_hi_div => 1,
 		m_cnt_lo_div => 1,
@@ -229,10 +233,10 @@
 		n_cnt_hi_div => 1,
 		n_cnt_lo_div => 1,
 		n_cnt_odd_div_duty_en => "false",
-		number_of_clocks => 1,
-		operation_mode => "normal",
+		number_of_clocks => 3,
+		operation_mode => "direct",
 		output_clock_frequency0 => "25.000000 MHz",
-		output_clock_frequency1 => "0 MHz",
+		output_clock_frequency1 => "40.000000 MHz",
 		output_clock_frequency10 => "0 MHz",
 		output_clock_frequency11 => "0 MHz",
 		output_clock_frequency12 => "0 MHz",
@@ -241,7 +245,7 @@
 		output_clock_frequency15 => "0 MHz",
 		output_clock_frequency16 => "0 MHz",
 		output_clock_frequency17 => "0 MHz",
-		output_clock_frequency2 => "0 MHz",
+		output_clock_frequency2 => "64.000000 MHz",
 		output_clock_frequency3 => "0 MHz",
 		output_clock_frequency4 => "0 MHz",
 		output_clock_frequency5 => "0 MHz",
@@ -296,12 +300,12 @@
 	  )
 	  PORT MAP ( 
 		fbclk => wire_gnd,
-		locked => wire_pll_25_altera_pll_altera_pll_i_639_locked,
-		outclk => wire_pll_25_altera_pll_altera_pll_i_639_outclk,
+		locked => wire_pll_3way_altera_pll_altera_pll_i_1557_locked,
+		outclk => wire_pll_3way_altera_pll_altera_pll_i_1557_outclk,
 		refclk => refclk,
 		rst => rst
 	  );
 
- END RTL; --pll_25
+ END RTL; --pll_3way
 --synopsys translate_on
 --VALID FILE

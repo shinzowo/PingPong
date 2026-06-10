@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file path="pll_3way_sim/pll_3way.vho" type="VHDL" />
+ <topLevel name="pll_3way" />
+ <deviceFamily name="cyclonev" />
+</simPackage>

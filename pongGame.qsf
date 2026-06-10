@@ -41,7 +41,7 @@ set_global_assignment -name DEVICE 5CGXFC5C6F27C7
 set_global_assignment -name TOP_LEVEL_ENTITY pongGame
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "13:55:53  DECEMBER 17, 2019"
-set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name LAST_QUARTUS_VERSION "21.1.1 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -107,7 +107,14 @@ set_global_assignment -name SOURCE_FILE pongGame.qsf
 set_global_assignment -name VHDL_FILE pongGame.vhd
 set_global_assignment -name VHDL_FILE pongImg.vhd
 set_global_assignment -name VHDL_FILE pongSync.vhd
-set_global_assignment -name QIP_FILE pll_25.qip
-set_global_assignment -name SIP_FILE pll_25.sip
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name CDF_FILE output_files/Chain3.cdf
+set_global_assignment -name QIP_FILE pll_3way.qip
+set_global_assignment -name SIP_FILE pll_3way.sip
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_location_assignment PIN_T12 -to HDMI_TX_INT
+set_location_assignment PIN_F7 -to LEDR[0]
+set_location_assignment PIN_F6 -to LEDR[1]
+set_location_assignment PIN_G6 -to LEDR[2]
+set_location_assignment PIN_G7 -to LEDR[3]
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
