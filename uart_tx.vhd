@@ -1,4 +1,3 @@
--- uart_tx.vhd
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -12,8 +11,8 @@ entity uart_tx is
         clk       : in  std_logic;
         reset_n   : in  std_logic;
         tx_data   : in  std_logic_vector(7 downto 0);
-        tx_start  : in  std_logic;   -- импульс: начать передачу байта
-        tx_busy   : out std_logic;   -- '1' пока идёт передача
+        tx_start  : in  std_logic;   
+        tx_busy   : out std_logic;   
         tx_line   : out std_logic    -- выход UART TX
     );
 end uart_tx;
@@ -45,7 +44,7 @@ begin
                     tx_busy   <= '0';
                     if tx_start = '1' then
                         tx_buf      <= tx_data;
-                        tx_line_i   <= '0';       -- стартовый бит
+                        tx_line_i   <= '0';      
                         bit_counter <= BIT_CNT_MAX - 1;
                         bit_index   <= 0;
                         tx_busy     <= '1';
@@ -64,7 +63,7 @@ begin
                 when DATA =>
                     if bit_counter = 0 then
                         if bit_index = 7 then
-                            tx_line_i   <= '1';   -- стоповый бит
+                            tx_line_i   <= '1';  
                             bit_counter <= BIT_CNT_MAX - 1;
                             state       <= STOP;
                         else

@@ -1,22 +1,16 @@
-// Конфигурация ADV7513 для 640x480 @ 60Hz
-// Основано на AN-1270 и опыте работы с платой Cyclone V GX Starter Kit
-
 module setup_rom (
   input  logic [7:0]  address,
   output logic [23:0] data,
   output logic [7:0]  rom_length
 );
-
-// Минимальная инициализация по Programming Guide + несколько
-// практических fixed-регистров для стабильного захвата RGB 4:4:4.
 assign rom_length = 8'd21;
 
 always_comb
   case (address)
-    // === Power down during setup ===
+    //Power down during setup
     8'd0:  data = 24'h72_41_10;
 
-    // === Fixed registers from ADV7513 Programming Guide ===
+    // Fixed registers from ADV7513 Programming Guide 
     8'd1:  data = 24'h72_98_03;
     8'd2:  data = 24'h72_9A_E0;
     8'd3:  data = 24'h72_9C_30;
@@ -27,26 +21,26 @@ always_comb
     8'd8:  data = 24'h72_E4_60;
     8'd9:  data = 24'h72_F9_00;
 
-    // === 24-bit RGB 4:4:4 with separate syncs and external DE ===
+    // 24-bit RGB 4:4:4 with separate syncs and external DE
     8'd10: data = 24'h72_15_00;
     8'd11: data = 24'h72_16_30;
     8'd12: data = 24'h72_17_00;
     8'd13: data = 24'h72_18_46;
 
-    // === Input clock capture tuning ===
+    // Input clock capture tuning
     8'd14: data = 24'h72_BA_60;
 
-    // === Optional AVI info for RGB / 4:3 ===
+    // Optional AVI info for RGB / 4:3
     8'd15: data = 24'h72_55_00;
     8'd16: data = 24'h72_56_08;
 
-    // === Bring transmitter up after configuration ===
+    // Bring transmitter up after configuration
     8'd17: data = 24'h72_41_00;
 
-    // === HDMI mode, no HDCP encryption ===
+    //HDMI mode, no HDCP encryption
     8'd18: data = 24'h72_AF_06;
 
-    // === Hot-Plug / Monitor Sense interrupt handling ===
+    //Hot-Plug / Monitor Sense interrupt handling 
     8'd19: data = 24'h72_96_C0; // Clear pending HPD + monitor-sense IRQs
     8'd20: data = 24'h72_94_C0; // Enable HPD + monitor-sense IRQs
     
@@ -55,11 +49,7 @@ always_comb
 
 endmodule
 
-
-// ============================================================
-// ОСНОВНОЙ МОДУЛЬ ADV7513_SETUP
-// ============================================================
-
+// Основной модуль ADV7513_SETUP
 module adv7513_setup #(
   parameter CNT_200MS = 32'd10_000_000  // 200ms at 50MHz
 ) (

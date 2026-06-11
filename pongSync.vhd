@@ -1,4 +1,3 @@
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -37,15 +36,15 @@ begin
     process(mode)
     begin
         case mode is
-            when "01" => -- 800x600 @ 60Hz (VESA Standard: Positive Sync)
+            when "01" => -- 800x600 @ 60Hz 
                 H_VISIBLE <= 800; H_FRONT_PORCH <= 40; H_SYNC_PULSE <= 128; H_BACK_PORCH <= 88;  H_TOTAL <= 1056;
                 V_VISIBLE <= 600; V_FRONT_PORCH <= 1;  V_SYNC_PULSE <= 4;   V_BACK_PORCH <= 23;  V_TOTAL <= 628;
                 sync_pol <= '1';
-            when "10" => -- 1024x768 @ 60Hz (VESA Standard: Negative Sync)
+            when "10" => -- 1024x768 @ 60Hz 
                 H_VISIBLE <= 1024; H_FRONT_PORCH <= 24; H_SYNC_PULSE <= 136; H_BACK_PORCH <= 160; H_TOTAL <= 1344;
                 V_VISIBLE <= 768;  V_FRONT_PORCH <= 3;  V_SYNC_PULSE <= 6;   V_BACK_PORCH <= 29;  V_TOTAL <= 806;
                 sync_pol <= '0';
-            when others => -- 640x480 @ 60Hz (VESA Standard: Negative Sync)
+            when others => -- 640x480 @ 60Hz 
                 H_VISIBLE <= 640; H_FRONT_PORCH <= 16; H_SYNC_PULSE <= 96;  H_BACK_PORCH <= 48;  H_TOTAL <= 800;
                 V_VISIBLE <= 480; V_FRONT_PORCH <= 10; V_SYNC_PULSE <= 2;   V_BACK_PORCH <= 33;  V_TOTAL <= 525;
                 sync_pol <= '0';
@@ -71,14 +70,12 @@ begin
         end if;
     end process;
 
-    -- Генерация активного импульса (всегда High внутри процесса)
     h_pulse <= '1' when (to_integer(h_count) >= (H_VISIBLE + H_FRONT_PORCH) and
                          to_integer(h_count) <  (H_VISIBLE + H_FRONT_PORCH + H_SYNC_PULSE)) else '0';
 
     v_pulse <= '1' when (to_integer(v_count) >= (V_VISIBLE + V_FRONT_PORCH) and
                          to_integer(v_count) <  (V_VISIBLE + V_FRONT_PORCH + V_SYNC_PULSE)) else '0';
 
-    -- Применение правильной полярности для ADV7513
     hsync <= h_pulse when sync_pol = '1' else not h_pulse;
     vsync <= v_pulse when sync_pol = '1' else not v_pulse;
 

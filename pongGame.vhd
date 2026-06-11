@@ -1,4 +1,3 @@
--- pongGame.vhd
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.numeric_std.all;
@@ -128,9 +127,7 @@ begin
         end case;
     end process;
 
-    -----------------------------------------------------------------
     -- Детектор Hot-Plug кабеля HDMI
-    -----------------------------------------------------------------
     process(FPGA_CLK_50)
     begin
         if rising_edge(FPGA_CLK_50) then
@@ -183,8 +180,6 @@ begin
         end if;
     end process;
 
-    -- KEY0 сбрасывает только игру. Видеотракт и ADV7513 живут отдельно,
-    -- чтобы экран не гас при игровом рестарте.
     adv_reset_n <= sys_reset_n and (not i2c_reinit);
 
     i2c_init: component adv7513_wrapper

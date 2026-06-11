@@ -1,19 +1,18 @@
--- uart_rx.vhd
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity uart_rx is
     generic (
-        CLK_FREQ   : integer := 50_000_000;   -- тактовая частота (50 МГц)
-        BAUD_RATE  : integer := 115_200       -- скорость UART
+        CLK_FREQ   : integer := 50_000_000;  
+        BAUD_RATE  : integer := 115_200       
     );
     port (
         clk        : in  std_logic;
         reset_n    : in  std_logic;
         rx_line    : in  std_logic;           -- вход от UART (RX)
         rx_data    : out std_logic_vector(7 downto 0);
-        rx_valid   : out std_logic            -- ИСПРАВЛЕНО: убрано недопустимое "= '0'"
+        rx_valid   : out std_logic            
     );
 end uart_rx;
 
@@ -42,9 +41,9 @@ begin
             
             case state is
                 when IDLE =>
-                    if rx_reg = '0' then          -- стартовый бит
+                    if rx_reg = '0' then         
                         state <= START;
-                        bit_counter <= BIT_CNT_MAX/2 - 1;  -- выборка в середине бита
+                        bit_counter <= BIT_CNT_MAX/2 - 1;  
                         bit_index <= 0;
                     end if;
                     

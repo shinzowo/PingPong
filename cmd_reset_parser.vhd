@@ -1,4 +1,3 @@
--- cmd_reset_parser.vhd
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -21,6 +20,8 @@ end cmd_reset_parser;
 architecture rtl of cmd_reset_parser is
 
     type response_rom_t is array (0 to 16) of std_logic_vector(7 downto 0);
+    type command_rom_t is array (0 to 8) of std_logic_vector(47 downto 0);
+    type command_len_rom_t is array (0 to 8) of integer range 0 to 6;
     
     constant ROM_OK   : response_rom_t := (x"4F",x"4B",x"0D",x"0A", others => x"00"); -- "OK\r\n"
     constant ROM_RES0 : response_rom_t := (x"4F",x"4B",x"20",x"36",x"34",x"30",x"78",x"34",x"38",x"30",x"0D",x"0A", others => x"00"); -- "OK 640x480\r\n"
@@ -48,6 +49,30 @@ architecture rtl of cmd_reset_parser is
     constant ROM_SPD4 : response_rom_t := (x"4F",x"4B",x"20",x"53",x"50",x"45",x"45",x"44",x"34",x"0D",x"0A", others => x"00"); -- "OK SPEED4\r\n"
     constant ROM_SPD5 : response_rom_t := (x"4F",x"4B",x"20",x"53",x"50",x"45",x"45",x"44",x"35",x"0D",x"0A", others => x"00"); -- "OK SPEED5\r\n"
 
+    constant CMD_ROM : command_rom_t := (
+        0 => x"005445534552", -- RESET
+        1 => x"000030534552", -- RES0
+        2 => x"000031534552", -- RES1
+        3 => x"000032534552", -- RES2
+        4 => x"314445455053", -- SPEED1
+        5 => x"324445455053", -- SPEED2
+        6 => x"334445455053", -- SPEED3
+        7 => x"344445455053", -- SPEED4
+        8 => x"354445455053"  -- SPEED5
+    );
+
+    constant CMD_LEN_ROM : command_len_rom_t := (
+        0 => 5,
+        1 => 4,
+        2 => 4,
+        3 => 4,
+        4 => 6,
+        5 => 6,
+        6 => 6,
+        7 => 6,
+        8 => 6
+    );
+
 begin
 
     tx_start <= tx_start_i;
@@ -55,6 +80,7 @@ begin
     speed_mode <= speed_reg;
 
     process(clk, reset_n)
+        variable matched_cmd : integer range -1 to 8;
     begin
         if reset_n = '0' then
             state       <= S_COLLECT;
@@ -75,73 +101,80 @@ begin
                 when S_COLLECT =>
                     if rx_valid = '1' then
                         if rx_data = x"0D" or rx_data = x"0A" then
-                            
-                            if cnt = 5 and buf(39 downto 0) = x"5445534552" then -- "RESET"
-                                reset_cmd <= '1';
-                                current_rom <= ROM_OK;
-                                max_tx_idx <= 3;
-                                state <= S_SEND_RESP;
-                                
-                            elsif cnt = 4 and buf(31 downto 0) = x"30534552" then -- "RES0"
-                                mode_reg <= "00";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_RES0;
-                                max_tx_idx <= 11;
-                                state <= S_SEND_RESP;
-                                
-                            elsif cnt = 4 and buf(31 downto 0) = x"31534552" then -- "RES1"
-                                mode_reg <= "01";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_RES1;
-                                max_tx_idx <= 11;
-                                state <= S_SEND_RESP;
-                                
-                            elsif cnt = 4 and buf(31 downto 0) = x"32534552" then -- "RES2"
-                                mode_reg <= "10";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_RES2;
-                                max_tx_idx <= 12;
-                                state <= S_SEND_RESP;
+                            matched_cmd := -1;
+                            for i in CMD_ROM'range loop
+                                if cnt = CMD_LEN_ROM(i) and buf = CMD_ROM(i) then
+                                    matched_cmd := i;
+                                end if;
+                            end loop;
 
-                            elsif cnt = 6 and buf = x"314445455053" then -- "SPEED1"
-                                speed_reg <= "001";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_SPD1;
-                                max_tx_idx <= 10;
-                                state <= S_SEND_RESP;
+                            case matched_cmd is
+                                when 0 =>
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_OK;
+                                    max_tx_idx <= 3;
+                                    state <= S_SEND_RESP;
 
-                            elsif cnt = 6 and buf = x"324445455053" then -- "SPEED2"
-                                speed_reg <= "010";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_SPD2;
-                                max_tx_idx <= 10;
-                                state <= S_SEND_RESP;
+                                when 1 =>
+                                    mode_reg <= "00";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_RES0;
+                                    max_tx_idx <= 11;
+                                    state <= S_SEND_RESP;
 
-                            elsif cnt = 6 and buf = x"334445455053" then -- "SPEED3"
-                                speed_reg <= "011";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_SPD3;
-                                max_tx_idx <= 10;
-                                state <= S_SEND_RESP;
+                                when 2 =>
+                                    mode_reg <= "01";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_RES1;
+                                    max_tx_idx <= 11;
+                                    state <= S_SEND_RESP;
 
-                            elsif cnt = 6 and buf = x"344445455053" then -- "SPEED4"
-                                speed_reg <= "100";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_SPD4;
-                                max_tx_idx <= 10;
-                                state <= S_SEND_RESP;
+                                when 3 =>
+                                    mode_reg <= "10";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_RES2;
+                                    max_tx_idx <= 12;
+                                    state <= S_SEND_RESP;
 
-                            elsif cnt = 6 and buf = x"354445455053" then -- "SPEED5"
-                                speed_reg <= "101";
-                                reset_cmd <= '1';
-                                current_rom <= ROM_SPD5;
-                                max_tx_idx <= 10;
-                                state <= S_SEND_RESP;
-                                
-                            else
-                                current_rom <= ROM_UNK;
-                                max_tx_idx <= 16;
-                                state <= S_SEND_RESP;
+                                when 4 =>
+                                    speed_reg <= "001";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_SPD1;
+                                    max_tx_idx <= 10;
+                                    state <= S_SEND_RESP;
+
+                                when 5 =>
+                                    speed_reg <= "010";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_SPD2;
+                                    max_tx_idx <= 10;
+                                    state <= S_SEND_RESP;
+
+                                when 6 =>
+                                    speed_reg <= "011";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_SPD3;
+                                    max_tx_idx <= 10;
+                                    state <= S_SEND_RESP;
+
+                                when 7 =>
+                                    speed_reg <= "100";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_SPD4;
+                                    max_tx_idx <= 10;
+                                    state <= S_SEND_RESP;
+
+                                when 8 =>
+                                    speed_reg <= "101";
+                                    reset_cmd <= '1';
+                                    current_rom <= ROM_SPD5;
+                                    max_tx_idx <= 10;
+                                    state <= S_SEND_RESP;
+
+                                when others =>
+                                    current_rom <= ROM_UNK;
+                                    max_tx_idx <= 16;
+                                    state <= S_SEND_RESP;
                             end if;
                             
                             cnt <= 0;
