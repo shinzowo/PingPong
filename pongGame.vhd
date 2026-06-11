@@ -39,9 +39,15 @@ architecture toplevel of pongGame is
     signal clk_65       : std_logic;
     signal selected_pixel_clk : std_logic;
     
-    signal video_on     : std_logic;
     signal pll_locked   : std_logic;
-    
+    signal hsync_raw    : std_logic;
+    signal vsync_raw    : std_logic;
+    signal de_raw       : std_logic;
+    signal hdmi_hsync_reg : std_logic := '1';
+    signal hdmi_vsync_reg : std_logic := '1';
+    signal hdmi_de_reg    : std_logic := '0';
+    signal hdmi_data_reg  : std_logic_vector(23 downto 0) := (others => '0');
+
     signal pixel_x_unsigned : unsigned(10 downto 0);
     signal pixel_y_unsigned : unsigned(10 downto 0);
     signal pixel_x_int : integer range 2047 downto 0;
@@ -55,6 +61,7 @@ architecture toplevel of pongGame is
     signal rx_data      : std_logic_vector(7 downto 0);
     signal rx_valid     : std_logic;
     signal reset_cmd    : std_logic;
+    signal reset_cmd_stretched : std_logic := '0';
     signal img_reset_int: std_logic;
     
     signal tx_data      : std_logic_vector(7 downto 0);
@@ -62,12 +69,17 @@ architecture toplevel of pongGame is
     signal tx_busy      : std_logic;
     
     signal res_mode_sig : std_logic_vector(1 downto 0);
+    signal speed_mode_sig : std_logic_vector(2 downto 0);
     
     -- Сигналы для логики Hot-Plug
     signal hpd_sync       : std_logic_vector(2 downto 0) := "000";
     signal i2c_reinit     : std_logic := '0';
-    signal reinit_counter : integer range 0 to 500_000 := 0; -- Таймер на 10 мс
+    signal reinit_counter : integer range 0 to 1_000_000 := 0; -- Таймер на 20 мс
     signal adv_reset_n    : std_logic;
+    signal init_done_prev : std_logic := '0';
+    signal startup_reinit_done : std_logic := '0';
+    signal sys_reset_n    : std_logic;
+    signal reset_stretch_cnt : integer range 0 to 31 := 0;
     
     component pll_3way is
         port (
@@ -91,6 +103,8 @@ architecture toplevel of pongGame is
     end component;
 
 begin
+
+    sys_reset_n <= pll_locked;
 
     pixel_x_int <= to_integer(pixel_x_unsigned);
     pixel_y_int <= to_integer(pixel_y_unsigned);
@@ -120,29 +134,58 @@ begin
     process(FPGA_CLK_50)
     begin
         if rising_edge(FPGA_CLK_50) then
-            -- 1. Сдвиговый регистр для защиты от метастабильности
-            hpd_sync <= hpd_sync(1 downto 0) & HDMI_TX_INT;
-
-            -- 2. Ловим изменение состояния пина (любое шевеление кабеля)
-            if (hpd_sync(2) = '0' and hpd_sync(1) = '1') or 
-               (hpd_sync(2) = '1' and hpd_sync(1) = '0') then
-                
-                -- Запускаем таймер удержания сброса I2C на 10 миллисекунд (500 000 тактов)
-                -- Это аппаратно подавит дребезг контактов
-                reinit_counter <= 500_000; 
-                i2c_reinit <= '1';
-                
-            elsif reinit_counter > 0 then
-                reinit_counter <= reinit_counter - 1;
-                i2c_reinit <= '1';
-            else
+            if sys_reset_n = '0' then
+                hpd_sync <= (others => '0');
                 i2c_reinit <= '0';
+                reinit_counter <= 0;
+                init_done_prev <= '0';
+                startup_reinit_done <= '0';
+            else
+                -- 1. Сдвиговый регистр для защиты от метастабильности
+                hpd_sync <= hpd_sync(1 downto 0) & HDMI_TX_INT;
+                init_done_prev <= init_done;
+
+                -- 2. После первого полного старта даём ADV7513 ещё одну мягкую
+                -- переинициализацию, чтобы холодный старт совпадал с hot-plug сценарием.
+                if startup_reinit_done = '0' and init_done_prev = '0' and init_done = '1' then
+                    reinit_counter <= 1_000_000;
+                    i2c_reinit <= '1';
+                    startup_reinit_done <= '1';
+                elsif (hpd_sync(2) = '0' and hpd_sync(1) = '1') or
+                      (hpd_sync(2) = '1' and hpd_sync(1) = '0') then
+                    reinit_counter <= 1_000_000;
+                    i2c_reinit <= '1';
+                elsif reinit_counter > 0 then
+                    reinit_counter <= reinit_counter - 1;
+                    i2c_reinit <= '1';
+                else
+                    i2c_reinit <= '0';
+                end if;
             end if;
         end if;
     end process;
 
-    -- ADV7513 сбрасывается либо физической кнопкой KEY(0), либо нашим автоматом Hot-Plug
-    adv_reset_n <= KEY(0) and (not i2c_reinit);
+    process(FPGA_CLK_50)
+    begin
+        if rising_edge(FPGA_CLK_50) then
+            if sys_reset_n = '0' then
+                reset_stretch_cnt <= 0;
+                reset_cmd_stretched <= '0';
+            elsif reset_cmd = '1' then
+                reset_stretch_cnt <= 31;
+                reset_cmd_stretched <= '1';
+            elsif reset_stretch_cnt > 0 then
+                reset_stretch_cnt <= reset_stretch_cnt - 1;
+                reset_cmd_stretched <= '1';
+            else
+                reset_cmd_stretched <= '0';
+            end if;
+        end if;
+    end process;
+
+    -- KEY0 сбрасывает только игру. Видеотракт и ADV7513 живут отдельно,
+    -- чтобы экран не гас при игровом рестарте.
+    adv_reset_n <= sys_reset_n and (not i2c_reinit);
 
     i2c_init: component adv7513_wrapper
         port map(
@@ -158,9 +201,9 @@ begin
             pixel_clk  => selected_pixel_clk,
             reset_n    => pll_locked,
             mode       => res_mode_sig,
-            hsync      => HDMI_TX_HSYNC,
-            vsync      => HDMI_TX_VSYNC,
-            de         => video_on,
+            hsync      => hsync_raw,
+            vsync      => vsync_raw,
+            de         => de_raw,
             pixel_x    => pixel_x_unsigned,
             pixel_y    => pixel_y_unsigned,
             frame_tick => refresh
@@ -169,9 +212,11 @@ begin
     imagegen : entity work.pongImg
         port map(
             img_reset   => img_reset_int,
+            pixel_clk   => selected_pixel_clk,
             refresh     => refresh,
-            video_on    => video_on,
+            video_on    => de_raw,
             mode        => res_mode_sig,
+            speed_mode  => speed_mode_sig,
             lbutton_p1  => lbutton_p1,
             rbutton_p1  => rbutton_p1,
             lbutton_p2  => lbutton_p2,
@@ -186,16 +231,39 @@ begin
     red_8bit   <= red_10bit(9 downto 2);
     green_8bit <= green_10bit(9 downto 2);
     blue_8bit  <= blue_10bit(9 downto 2);
-    
-    HDMI_TX_D   <= red_8bit & green_8bit & blue_8bit;
+
+    process(selected_pixel_clk, pll_locked)
+    begin
+        if pll_locked = '0' then
+            hdmi_hsync_reg <= '1';
+            hdmi_vsync_reg <= '1';
+            hdmi_de_reg <= '0';
+            hdmi_data_reg <= (others => '0');
+        elsif rising_edge(selected_pixel_clk) then
+            hdmi_hsync_reg <= hsync_raw;
+            hdmi_vsync_reg <= vsync_raw;
+
+            if init_done = '1' then
+                hdmi_de_reg <= de_raw;
+                hdmi_data_reg <= red_8bit & green_8bit & blue_8bit;
+            else
+                hdmi_de_reg <= '0';
+                hdmi_data_reg <= (others => '0');
+            end if;
+        end if;
+    end process;
+
+    HDMI_TX_D   <= hdmi_data_reg;
     HDMI_TX_CLK <= selected_pixel_clk;
-    HDMI_TX_DE  <= video_on;
+    HDMI_TX_HSYNC <= hdmi_hsync_reg;
+    HDMI_TX_VSYNC <= hdmi_vsync_reg;
+    HDMI_TX_DE  <= hdmi_de_reg;
     
     uart_rx_inst: entity work.uart_rx
         generic map(CLK_FREQ => 50_000_000, BAUD_RATE => 115_200)
         port map(
             clk      => FPGA_CLK_50,
-            reset_n  => KEY(0),
+            reset_n  => sys_reset_n,
             rx_line  => UART_RX,
             rx_data  => rx_data,
             rx_valid => rx_valid
@@ -205,7 +273,7 @@ begin
         generic map(CLK_FREQ => 50_000_000, BAUD_RATE => 115_200)
         port map(
             clk      => FPGA_CLK_50,
-            reset_n  => KEY(0),
+            reset_n  => sys_reset_n,
             tx_data  => tx_data,
             tx_start => tx_start,
             tx_busy  => tx_busy,
@@ -215,21 +283,22 @@ begin
     parser_inst: entity work.cmd_reset_parser
         port map(
             clk             => FPGA_CLK_50,
-            reset_n         => KEY(0),
+            reset_n         => sys_reset_n,
             rx_data         => rx_data,
             rx_valid        => rx_valid,
             tx_data         => tx_data,
             tx_start        => tx_start,
             tx_busy         => tx_busy,
             reset_cmd       => reset_cmd,
-            resolution_mode => res_mode_sig
+            resolution_mode => res_mode_sig,
+            speed_mode      => speed_mode_sig
         );
 
-    img_reset_int <= (not KEY(0)) or reset_cmd;
+    img_reset_int <= (not KEY(0)) or reset_cmd_stretched;
 
     LEDR(0) <= pll_locked;
     LEDR(1) <= init_done;
-    LEDR(2) <= reset_cmd;
+    LEDR(2) <= reset_cmd_stretched;
     LEDR(9 downto 3) <= (others => '0');
 
 end toplevel;

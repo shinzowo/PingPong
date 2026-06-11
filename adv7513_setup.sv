@@ -7,53 +7,48 @@ module setup_rom (
   output logic [7:0]  rom_length
 );
 
-// Всего 27 команд инициализации
-assign rom_length = 8'd27;
+// Минимальная инициализация по Programming Guide + несколько
+// практических fixed-регистров для стабильного захвата RGB 4:4:4.
+assign rom_length = 8'd21;
 
 always_comb
   case (address)
-    // === Сброс и питание ===
-    8'd0:  data = 24'h72_41_10; // Power-down mode ON (сброс)
-    8'd1:  data = 24'h72_41_00; // Power-down OFF
-    
-    // === Настройка формата входных данных (640x480, RGB 24-bit) ===
-    8'd2:  data = 24'h72_15_00; // 24-bit RGB, separate syncs
-    8'd3:  data = 24'h72_16_30; // 24-bit input, no swapping, rising edge
-    8'd4:  data = 24'h72_18_46; // CSC disabled
-    
-    // === Настройка DE (Data Enable) для 640x480 ===
-    8'd5:  data = 24'h72_35_8F; // DE H placement low byte
-    8'd6:  data = 24'h72_36_02; // DE H placement high byte
-    8'd7:  data = 24'h72_37_7F; // DE H duration low byte
-    8'd8:  data = 24'h72_38_02; // DE H duration high byte
-    8'd9:  data = 24'h72_39_E9; // DE V placement low byte
-    8'd10: data = 24'h72_3A_01; // DE V placement high byte
-    8'd11: data = 24'h72_3C_DF; // DE V duration low byte
-    8'd12: data = 24'h72_3D_01; // DE V duration high byte
-    
-    // === Video ID Code для 640x480@60Hz (VIC = 1) ===
-    8'd13: data = 24'h72_3E_01; // VIC 1: 640x480p @ 59.94/60Hz
-    
-    // === Настройка выходного формата ===
-    8'd14: data = 24'h72_48_48; // 24-bit output, RGB
-    8'd15: data = 24'h72_4C_06; // 12-bit output mode
-    
-    // === AV Info Frame ===
-    8'd16: data = 24'h72_55_00; // RGB in AV Info Frame
-    8'd17: data = 24'h72_56_08; // Active format aspect
-    
-    // === ADI Required Writes ===
-    8'd18: data = 24'h72_98_03; // ADI required
-    8'd19: data = 24'h72_99_02; // ADI required
-    8'd20: data = 24'h72_9C_30; // ADI required
-    8'd21: data = 24'h72_9D_61; // Set clock divide
-    8'd22: data = 24'h72_A2_A4; // ADI required
-    8'd23: data = 24'h72_43_A4; // ADI required
-    8'd24: data = 24'h72_DE_9C; // ADI required
-    8'd25: data = 24'h72_E4_60; // ADI required
-    
-    // === Включение HDMI выхода ===
-    8'd26: data = 24'h72_AF_16; // Set HDMI Mode, no HDCP
+    // === Power down during setup ===
+    8'd0:  data = 24'h72_41_10;
+
+    // === Fixed registers from ADV7513 Programming Guide ===
+    8'd1:  data = 24'h72_98_03;
+    8'd2:  data = 24'h72_9A_E0;
+    8'd3:  data = 24'h72_9C_30;
+    8'd4:  data = 24'h72_9D_61;
+    8'd5:  data = 24'h72_A2_A4;
+    8'd6:  data = 24'h72_A3_A4;
+    8'd7:  data = 24'h72_E0_D0;
+    8'd8:  data = 24'h72_E4_60;
+    8'd9:  data = 24'h72_F9_00;
+
+    // === 24-bit RGB 4:4:4 with separate syncs and external DE ===
+    8'd10: data = 24'h72_15_00;
+    8'd11: data = 24'h72_16_30;
+    8'd12: data = 24'h72_17_00;
+    8'd13: data = 24'h72_18_46;
+
+    // === Input clock capture tuning ===
+    8'd14: data = 24'h72_BA_60;
+
+    // === Optional AVI info for RGB / 4:3 ===
+    8'd15: data = 24'h72_55_00;
+    8'd16: data = 24'h72_56_08;
+
+    // === Bring transmitter up after configuration ===
+    8'd17: data = 24'h72_41_00;
+
+    // === HDMI mode, no HDCP encryption ===
+    8'd18: data = 24'h72_AF_06;
+
+    // === Hot-Plug / Monitor Sense interrupt handling ===
+    8'd19: data = 24'h72_96_C0; // Clear pending HPD + monitor-sense IRQs
+    8'd20: data = 24'h72_94_C0; // Enable HPD + monitor-sense IRQs
     
     default: data = 24'h00_00_00;
   endcase
